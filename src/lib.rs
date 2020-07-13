@@ -5,14 +5,14 @@ pub struct Room {
     id: u64,
     name: String,
     status: u8,
-    //0:invalid 1:valid
+    //0:invalid 1:valid,
     kind: u8,
-    //0:sys 1:pub 2:private
+    //0:sys 1:pub 2:private,
     adminid: u64,
     cts: SystemTime,
     max: u8,
-    //contain number
-    forbidword: u8, //0:no 1:yes
+    //contain number,
+    forbidword: u8, //0:no 1:yes,
 }
 
 impl Room {
@@ -36,7 +36,7 @@ pub struct Chater {
     friends: Vec<u64>,
     rooms: Vec<Room>,
     forbid_word: u8,
-    //0:no 1:yes
+    //0:no 1:yes,
     circle: HashMap<u64, Vec<u64>>, //<housename,vec<chater>>
 }
 
