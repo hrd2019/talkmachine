@@ -35,7 +35,7 @@ pub struct Chater {
     nickname: String,
     friends: Vec<u64>,
     rooms: Vec<Room>,
-    forbidword: u8,
+    forbid_word: u8,
     //0:no 1:yes
     circle: HashMap<u64, Vec<u64>>, //<housename,vec<chater>>
 }
@@ -45,7 +45,7 @@ impl Chater {
         Chater {
             id: 0,
             nickname,
-            forbidword: 0,
+            forbid_word: 0,
             friends: Default::default(),
             rooms: vec![],
             circle: Default::default(),
