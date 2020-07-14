@@ -4,15 +4,16 @@ use std::time::SystemTime;
 pub struct Room {
     id: u64,
     name: String,
+    //status 0:invalid 1:valid,
     status: u8,
-    //0:invalid 1:valid,
+    //kind 0:sys 1:pub 2:private,
     kind: u8,
-    //0:sys 1:pub 2:private,
     adminid: u64,
     cts: SystemTime,
+    //max contain max number,
     max: u8,
-    //contain number,
-    forbidword: u8, //0:no 1:yes,
+    //forbidword 0:no 1:yes
+    forbidword: u8,
 }
 
 impl Room {
@@ -35,9 +36,10 @@ pub struct Chater {
     nickname: String,
     friends: Vec<u64>,
     rooms: Vec<Room>,
+    //forbid_word 0:no 1:yes,
     forbid_word: u8,
-    //0:no 1:yes,
-    circle: HashMap<u64, Vec<u64>>, //<housename,vec<chater>>
+    //circle <housename,vec<chater>>
+    circle: HashMap<u64, Vec<u64>>,
 }
 
 impl Chater {
