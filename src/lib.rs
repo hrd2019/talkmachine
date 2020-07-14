@@ -61,7 +61,7 @@ impl Chater {
 
     fn subt_friend(&mut self, userid: u64) -> bool {
         for (index, uid) in self.friends.iter().enumerate() {
-            if uid == userid {
+            if *uid == userid {
                 self.friends.remove(index);
                 break;
             }
@@ -78,7 +78,7 @@ impl Chater {
     fn subt_circle(&mut self, roomid: u64, userid: u64) {
         let mut circle = self.circle.entry(roomid).or_default();
         for (index, uid) in circle.iter().enumerate() {
-            if uid == userid {
+            if *uid == userid {
                 circle.remove(index);
                 break;
             }
