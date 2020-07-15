@@ -1,3 +1,5 @@
+use actix_web::web::Json;
+use actix_web::{post, HttpResponse, Responder};
 use serde_derive::Deserialize;
 use serde_derive::Serialize;
 use std::collections::HashMap;
@@ -45,7 +47,7 @@ pub struct Chater {
 }
 
 impl Chater {
-    fn new(nickname: String) -> Chater {
+    pub fn new(nickname: String) -> Chater {
         Chater {
             id: 0,
             nickname,
@@ -56,7 +58,7 @@ impl Chater {
         }
     }
 
-    fn add_friend(&mut self, userid: u64) -> bool {
+    pub fn add_friend(&mut self, userid: u64) -> bool {
         self.friends.push(userid);
         true
     }
@@ -90,5 +92,8 @@ impl Chater {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Message {
+    // userid: u64,
+    // roomid: u64,
+    // touserid: u64,
     pub data: String,
 }

@@ -3,7 +3,7 @@ use actix_web::{
     get, middleware, post, web, App, HttpRequest, HttpResponse, HttpServer, Responder,
 };
 use std::borrow::Borrow;
-use talkmachine::Message;
+use talkmachine::{Chater, Message};
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
@@ -12,10 +12,10 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::DefaultHeaders::new().header("X-Version", "0.2"))
             .wrap(middleware::Compress::default())
             .wrap(middleware::Logger::new("\"%r\" %s %b %Dms"))
-            .service(no_params)
             .service(index)
-            .service(xxx)
             .route("/xx", web::post().to(xx))
+            .service(pull)
+            .service(push)
     })
     .bind("0.0.0.0:8080")?
     .workers(1)
@@ -29,17 +29,17 @@ async fn index() -> impl Responder {
     HttpResponse::Ok().body("asdfdasf")
 }
 
-async fn xx(req: HttpRequest, _info: web::Json<Message>) -> impl Responder {
+async fn xx(req: HttpRequest, msg: web::Json<Message>) -> impl Responder {
     println!("REQ: {:#?}", req);
-    HttpResponse::Ok().body("asdfdasf")
-}
-
-#[post("/xxx/xx")]
-async fn xxx(msg: Json<Message>) -> impl Responder {
     HttpResponse::Ok().body(&msg.data)
 }
 
-#[get("/")]
-async fn no_params() -> &'static str {
-    "Hello world!\r\n"
+#[post("/chat/pull")]
+async fn pull(msg: Json<Message>) -> impl Responder {
+    HttpResponse::Ok().body(&msg.data)
+}
+
+#[post("/chat/push")]
+async fn push(msg: Json<Message>) -> impl Responder {
+    HttpResponse::Ok().body(&msg.data)
 }
