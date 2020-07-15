@@ -1,3 +1,5 @@
+use serde_derive::Deserialize;
+use serde_derive::Serialize;
 use std::collections::HashMap;
 use std::time::SystemTime;
 
@@ -84,4 +86,9 @@ impl Chater {
             }
         }
     }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Message {
+    pub data: String,
 }
