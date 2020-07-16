@@ -1,10 +1,6 @@
-use actix_web::dev::HttpServiceFactory;
-use actix_web::web::Json;
-use actix_web::{post, HttpRequest, HttpResponse, Responder};
 use serde_derive::Deserialize;
 use serde_derive::Serialize;
 use std::collections::HashMap;
-use std::future::Future;
 use std::time::SystemTime;
 
 pub struct Room {
@@ -94,6 +90,7 @@ impl Chater {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Message {
+    pub index: String,
     // userid: u64,
     // roomid: u64,
     // touserid: u64,
