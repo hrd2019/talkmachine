@@ -1,3 +1,4 @@
+use crate::chat::chat::Chat;
 use actix_web::web::Json;
 use actix_web::{
     get, middleware, post, web, App, HttpRequest, HttpResponse, HttpServer, Responder,
@@ -5,9 +6,11 @@ use actix_web::{
 use std::borrow::Borrow;
 use talkmachine::{Chater, Message};
 
+mod chat;
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
+        let c = Chat::new();
         App::new()
             .wrap(middleware::DefaultHeaders::new().header("X-Version", "0.2"))
             .wrap(middleware::Compress::default())
@@ -15,7 +18,9 @@ async fn main() -> std::io::Result<()> {
             .service(index)
             .route("/xx", web::post().to(xx))
             .service(pull)
-            .service(push)
+            // .service(c.pull)
+            .route("/push", web::post().to(c.push))
+            .route("/pull", web::post().to(c.pull))
     })
     .bind("0.0.0.0:8080")?
     .workers(1)
@@ -25,7 +30,6 @@ async fn main() -> std::io::Result<()> {
 
 #[get("/index.html")]
 async fn index() -> impl Responder {
-    // println!("{:#?}", msg);
     HttpResponse::Ok().body("asdfdasf")
 }
 

@@ -1,8 +1,10 @@
+use actix_web::dev::HttpServiceFactory;
 use actix_web::web::Json;
-use actix_web::{post, HttpResponse, Responder};
+use actix_web::{post, HttpRequest, HttpResponse, Responder};
 use serde_derive::Deserialize;
 use serde_derive::Serialize;
 use std::collections::HashMap;
+use std::future::Future;
 use std::time::SystemTime;
 
 pub struct Room {
@@ -97,3 +99,23 @@ pub struct Message {
     // touserid: u64,
     pub data: String,
 }
+
+// pub mod chat {
+//     use crate::Message;
+//     use actix_web::web::Json;
+//     use actix_web::{HttpResponse, Responder};
+//
+//     pub struct Chat();
+//
+//     impl Chat {
+//         #[post("/chat/pull")]
+//         pub async fn pull(msg: Json<Message>) -> impl Responder {
+//             HttpResponse::Ok().body(&msg.data)
+//         }
+//
+//         #[post("/chat/push")]
+//         pub async fn push(msg: Json<Message>) -> impl Responder {
+//             HttpResponse::Ok().body(&msg.data)
+//         }
+//     }
+// }
