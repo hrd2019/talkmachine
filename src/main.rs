@@ -16,9 +16,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Compress::default())
             .wrap(middleware::Logger::new("\"%r\" %s %b %Dms"))
             .service(index)
-            .route("/xx", web::post().to(xx))
             .service(pull)
-            // .service(c.pull)
             .route("/push", web::post().to(c.push))
             .route("/pull", web::post().to(c.pull))
     })
@@ -28,22 +26,12 @@ async fn main() -> std::io::Result<()> {
     .await
 }
 
-#[get("/index.html")]
+#[get("/index")]
 async fn index() -> impl Responder {
-    HttpResponse::Ok().body("asdfdasf")
-}
-
-async fn xx(req: HttpRequest, msg: web::Json<Message>) -> impl Responder {
-    println!("REQ: {:#?}", req);
-    HttpResponse::Ok().body(&msg.data)
+    HttpResponse::Ok().body("hello")
 }
 
 #[post("/chat/pull")]
 async fn pull(msg: Json<Message>) -> impl Responder {
-    HttpResponse::Ok().body(&msg.data)
-}
-
-#[post("/chat/push")]
-async fn push(msg: Json<Message>) -> impl Responder {
     HttpResponse::Ok().body(&msg.data)
 }
