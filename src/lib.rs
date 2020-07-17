@@ -91,10 +91,11 @@ impl Chater {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Message {
     pub index: String,
-    // userid: u64,
-    // roomid: u64,
-    // touserid: u64,
+    pub userid: u64,
+    pub roomid: u64,
+    pub touserid: u64,
     pub data: String,
+    pub flag: u64,
 }
 
 // pub mod chat {

@@ -1,3 +1,9 @@
+use actix_web::{HttpRequest, HttpResponse};
+use actix_web::web::Json;
+use talkmachine::Message;
+use crate::chat::eshandle::ESHandler;
+use futures::executor::block_on;
+
 pub mod chat {
     use std::net::ToSocketAddrs;
 
@@ -7,9 +13,10 @@ pub mod chat {
     use futures::executor::block_on;
     use futures::Future;
     use talkmachine::Message;
+    use crate::chat::xx;
 
     pub struct Chat {
-        pub pull: fn(req: HttpRequest, msg: Json<Message>) -> HttpResponse,
+        pub pull: fn(msg: Json<Message>) -> HttpResponse,
         pub push: fn(msg: Json<Message>) -> HttpResponse,
     }
 
@@ -30,11 +37,26 @@ pub mod chat {
             let push = |msg: Json<Message>| HttpResponse::Ok().body(&msg.data);
 
             Chat {
-                pull: pull,
+                pull: xx,
                 push: push,
             }
         }
     }
+}
+
+fn xx(msg: Json<Message>) -> HttpResponse {
+    println!("{}", &msg.index);
+
+    // async {
+    //     let es = ESHandler::new();
+    //     // es.push(&msg);
+    //     let future = es.push(&msg).await;
+    //     println!("--------------------------------------------{}", future);
+    // };
+    let es = ESHandler::new();
+    eprintln!("{}", es.test(&msg));
+
+    HttpResponse::Ok().body(&msg.data)
 }
 
 pub mod eshandle {
@@ -43,8 +65,11 @@ pub mod eshandle {
     use elasticsearch::auth::Credentials;
     use elasticsearch::http::transport::Transport;
     use elasticsearch::indices::IndicesExistsParts::Index;
-    use elasticsearch::Elasticsearch;
+    use elasticsearch::{Elasticsearch, IndexParts, CreateParts};
     use talkmachine::Message;
+    use elasticsearch::CreateParts::IndexId;
+    use serde_json::{json, Value};
+    use futures::executor::block_on;
 
     pub struct ESHandler {
         es: Elasticsearch,
@@ -64,9 +89,9 @@ pub mod eshandle {
             }
         }
 
-        pub async fn push(&self, data: &Message) {
+        pub async fn push(&self, data: &Message) -> u64 {
             let index = [data.index.trim_start()];
-            println!("dddddddddddddddd");
+            println!("========={}", data.index);
             let res = self
                 .es
                 .indices()
@@ -78,6 +103,47 @@ pub mod eshandle {
                 Ok(t) => println!("{}", t.status_code().is_success()),
                 Err(e) => println!("{}", e),
             }
+
+            100
+        }
+
+        pub fn test(&self, data: &Message) -> u64 {
+            let index = [data.index.trim_start()];
+            async {
+                let response = self.es.index(IndexParts::Index("chat"))
+                    .body(json!(
+    {
+    "roomid":121,
+    "userid":1,
+    "index":"chatx",
+    "msg":"hello, ddd",
+    "touserid":2,
+    "flag":1
+}
+    )).send().await;
+                match response {
+                    Ok(test) => println!("{}", test.status_code()),
+
+                    _ => {}
+                }
+            };
+
+            // async {
+            //     println!("{:#?}", self.es.info());
+            //     let res = self
+            //         .es
+            //         .indices()
+            //         .exists(Index(&index))
+            //         .ignore_unavailable(true)
+            //         .send().await;
+            //     match res {
+            //         Ok(t) => println!("{}", t.status_code().is_success()),
+            //         Err(e) => println!("{}", e),
+            //         _ => {}
+            //     }
+            // };
+
+            100
         }
     }
 }
